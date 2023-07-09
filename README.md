@@ -1,5 +1,5 @@
-- 👋 Hi, I’m @jeffmadrona
-- 📫 How to reach me via LinkedIn: www.linkedin.com/in/jeff-madrona-25805034
+- 👋 Hi
+- 📫 
 
 <!---
 jeffmadrona/jeffmadrona is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
