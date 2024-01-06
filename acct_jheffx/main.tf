@@ -6,3 +6,15 @@ resource "aws_s3_bucket" "jheffx-datastore" {
     Environment = "test"
   }
 }
+
+resource "aws_s3_object" "folder" {
+  bucket = aws_s3_bucket.jheffx-datastore.id
+  key = "inbound/"
+  content_type = "application/x-directory"
+}
+
+resource "aws_s3_object" "sampledata" {
+  bucket = aws_s3_bucket.jheffx-datastore.id
+  key = "inbound/employee"
+  source = "/Users/jeffmadrona/Documents/Git Project/jeffmadrona/data/employee_sample.csv"
+}
