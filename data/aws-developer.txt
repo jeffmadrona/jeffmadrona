@@ -91,7 +91,7 @@
 					® Up to 99.999% durability
 					® SAN in the cloud
 				□ Throughput Optimized HDD (st1)
-					® For Big Data, DW, ETL
+					® For Big Data, DW, ETL workloads
 					® Max throughput is 500MB/s per volume
 					® Cannot be a boot volume
 					® Up to 99.9% durability
@@ -110,6 +110,10 @@
 					® Measures the number of bits read or written per second (MB/s)
 					® Metric for large datasets, large I/O sizes, complex queries
 					® Ability to deal with large data sets
+			§ EBS Snapshots
+				□ Point in time copy of EB volume. For backup or can be used in creating a new volume.
+				□ If you create a new EBS volume from an encrypted snapshot, then you will get an encrypted volume.
+				□ If you create a new EBS volume from an unencrypted snapshot, then you will get an unencrypted volume.
 		○ Elastic Load Balancer
 			§ Types
 				□ Application Load Balancer (HTTP and HTTPS)
@@ -117,19 +121,27 @@
 					® Intelligent load balancing
 				□ Network Load Balancer (TCP and High Performance)
 					® Operates at layer 4 (Transport) of OSI model. Most expensive option
-				□ Classic Load Balancer (HTTP, HTTPS and TCP)
+				□ Classic Load Balancer (HTTP, HTTPS and TCP) - legacy option
 				□ Gateway Load Balancer
 					® For 3rd-party appliance like firewall, IDP/IPS
 				□ X-Forwarded-For header - if you need the IPv4 address of your end user, look for the x-forwarded-for header.
 			§ Common Error
 				□ Error 504 - gateway timeout
 		○ Route 53 (DNS Service) - map domain name to EC2 instances, Load Balancers or S3 buckets
+			§ Terminology
+				□ Hosted Zone - a container for DNS records for your domain
+				□ Alias - Allows you to route traffic addressed to the zone apex, or the top of the DNS namespace e.g. ilovecloud.com and send it to a resource within AWS e.g. an elastic load balancer.
+				□ A Record - allows you to route traffic to a resource, such as web server, using IPv4 address.
 		○ AWS CLI
+			§ Least Privilege - always give users the minimum amount of access required to do their job.
+			§ Use Groups - create IAM groups and assign your users to groups. Group permissions are assigned using IAM policy and your users will automatically inherit the permissions of the group.
 			§ Access key is only available at the time off creation. If you lose it you need to create it again
+			§ Supports Linux, Windows and MacOS
 			§ Pagination, time out error may happen if result is too many. Adjust it using --page-size or --max-items
 			§ Pagination, it still returns all items but make multiple API calls
 		○ AWS Cloudshell
 			§ Linux terminal with pre-installed tool. You can run AWS CLI commands from cloudshell
+		○ Roles for EC2
 		○ RDS
 			§ For OLTP workloads not for OLAP
 			§ Database Types: MS SQL Server, Oracle, MySQL, PostgreSQL, MariaDB, Amazon Aurora
@@ -138,29 +150,32 @@
 				□ Create EC Instance
 					® Install database client
 				□ Update security group of rds to allow connection to ec2 instance
-			§ RDS Multi-AZ
-				□ Exact copy of primary database in another AZ
-				□ Handles replication for disaster recovery
-				□ Automatic failover during failure
-			§ RDS Read-Replica (read-only copy of primary database)
-				□ For scaling performance and great for read-heavy workloads like BI reporting
-				□ Automatic backup must be enabled
-				□ Can be located in same/different AZ/region
-				□ Has a different DNS endpoint
-				□ Multiple read replicas are supported (up to 5 replicas)
-			§ RDS Automated Backup
-				□ Enabled by default
-				□ Creates daily backups that runs during the window you defined
-				□ Transaction logs are used to replay transactions.
-				□ Ability to do point-in-time recovery
-				□ Stored in S3
-				□ Retention period from 1 to 35 days
-			§ RDS Snapshot
-				□ Snapshot of storage volume attached to the DB instance
-				□ Manual, adhoc, user-initiated point in time snapshot
-				□ Stored in S3
-				□ No retention period
-				□ Backup and restore to a known state
+			§ Muli-AZ vs Read replica
+				□ RDS Multi-AZ
+					® Exact copy of primary database in another AZ
+					® Handles replication for disaster recovery
+					® Automatic failover during failure
+				□ RDS Read-Replica (read-only copy of primary database)
+					® For scaling performance and great for read-heavy workloads like BI reporting
+					® Automatic backup must be enabled
+					® Can be located in same/different AZ/region
+					® Has a different DNS endpoint
+					® Multiple read replicas are supported (up to 5 replicas)
+			§ Automated Backup vs snapshot
+				□ RDS Automated Backup
+					® Enabled by default
+					® Creates daily backups that runs during the window you defined
+					® Transaction logs are used to replay transactions.
+					® Ability to do point-in-time recovery
+					® Stored in S3
+					® Retention period from 1 to 35 days
+					® Can be used point in time recovery
+				□ RDS Snapshot
+					® Snapshot of storage volume attached to the DB instance
+					® Manual, adhoc, user-initiated point in time snapshot
+					® Stored in S3
+					® No retention period
+					® Backup and restore to a known state
 			§ RDS Encryption
 				□ Enabled during creation
 				□ Uses KMS for AES-256 encryption
@@ -189,22 +204,32 @@
 			§ Types
 				□ Memcached
 					® Basic object caching
-					® Scales horizontally, no persistence/multi-AZ or failover
+					® Object caching is your primary goal
+					® You want to keep things as simple as possible
+					® Scales horizontally, you don’t need persistence or multi-AZ or failover
+					® You don't need to support advanced data types or sorting
 				□ Redis
 					® With enterprise features like persistence, replication, multi-AZ and failover
 					® Supports sorting and ranking data (like gaming leaderboards, complex data type)
+					® You have advance data type such as list and hashes
 		○ Memory DB for Redis
 			§ In memory database with ultra fast performance (GB to 100TB)
 			§ Microsecond read and single-digit millisecond write.
 			§ Can be a primary DB, can store the whole dataset in memory, no database required.
-		○ Systems Manager Parameter Store
+		○ ElastiCache vs MemoryDB
+			§ MemoryDB can store whole dataset in memory - no database required
+			§ ElastiCache is an in memory cache for databases e.g. RDS
+		○ Systems Manager: Parameter Store
+			§ Wider use case
 			§ Stores configuration like connection string and licenses.
 			§ Plain text or encrypted
 			§ You can reference parameters using parameter name like in bootstrap script
+			§ For configuration variables
 			§ Integrate with other services like EC2, CloudFormation, etc.
 		○ AWS Secrets Manager
 			§ Centrally manage secrets
-			§ Great for storing database credentials, API keys, rotation of keys
+			§ Great for storing database credentials, API keys
+			§ Supports automatic rotation of keys
 			§ Encrypt using AWS KMS
 			§ Secret Types
 				□ RDS Database
@@ -212,6 +237,15 @@
 				□ DocumentDB Database
 				□ Other Database
 				□ API Keys
+		○ RDS Proxy
+			§ Use to scale your applications by pooling and sharing database connections for scalability and efficiency.
+			§ Your application is pointed toward RDS proxy
+			§ RDS database receives information from the application through RDS proxy.
+			§ Serverless and scales automatically
+			§ Preserves application connection
+			§ Detects failover and routes request
+			§ Deployable over muli-AZ for protection
+			§ Up to 66% faster failover times
 		○ EC2 Image Builder
 			§ Use to create EC2 image (AMI or container), simple to use (GUI) and Validate your image.
 			§ Automates the process of building and maintaining your image (AMI).
@@ -224,11 +258,29 @@
 				□ Image Pipeline - setting and process
 				□ Image Recipe - source image and build components
 				□ Build Components - software to include
+		○ Distributing AMI to different region
+			§ AMIs are regional
+			§ To use an AMI in different region create a copy
+			§ You can apply encryption in the copy process
+			§ You cannot unencrypt in the copy process
 	• S3
+		○ S3 101
+			§ Object based
+			§ Not suitable to install an OS or run a DB
+			§ Files up to 5TB
+			§ Unlimited storage. Total volume of data and number of objects you can store is unlimited.
+			§ S3 is a universal namespace
+			§ https://bucket-name.s3.region.amazonaws.com/key-name
+			§ HTTP 200 - successful upload
+			§ S3 Object
+				□ Key - object/file name
+				□ Value - The data itself
+				□ Version ID. Story multiple version of same object
+				□ Metadata. Data about the data e.g. content-type, last-modified
 	• Serverless Computing
 	• DynamoDB
 	• KMS and Encryption on AWS
 	• Other AWS Services
 	• Developer Theory
 	• Advanced IAM
-Monitoring
+	• Monitoring
