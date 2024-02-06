@@ -1,0 +1,234 @@
+	• IAM
+		○ Identity
+			§ Users
+			§ Groups
+			§ Role
+				□ Type
+					® Service Role
+					® Service-Linked Role
+				□ Permission Policy
+				□ Trust Policy
+					® Trusting Account/Entity
+					® Trusted Account/Entity
+				□ Delegated Role - allowed cross account
+				□ Federated Role - for SSO
+				□ Best Practice
+					® For applications
+					® Working with IdP
+					® For application requiring temporary access
+				□ Policy Simulator
+	• EC2 (like a VM hosted in public cloud)
+		○ Features
+			§ Select the capacity
+			§ Grow and shrink when you need
+			§ Pay for what you use
+			§ Wait minutes not months
+		○ Pricing models
+			§ On Demand (by the hour/second)
+				□ Flexible, no up-front payment
+				□ Short-Term, applications with unpredictable workloads that cannot be interrupted
+				□ POC/Testing
+			§ Reserved (1-3 years, up to 72% discount on the hourly, regional)
+				□ Applications with predictable usage
+				□ Specific capacity requirements
+				□ Pay up-front
+				□ Types
+					® Standard RI's (up to 72% off on-demand prices, you cannot change)
+					® Convertible RI's (up to 54% off on-demand price)
+					® Scheduled RI's (recurring, predictable schedule)
+			§ Spot (Purchase unused capacity, up to 90% discount, prices fluctuates, can be terminated/hybernated)
+				□ Flexible - For applications with flexible start/end time.
+				□ Urgent Capacity - Users with urgent need for large capacity.
+				□ Cost sensitive - For applications that are only feasible at very low compute prices.
+			§ Dedicated (Physical EC2 server, most expensive)
+				□ Application with compliance requirements 
+				□ Application with licensing requirements
+				□ Types
+					® On-demand
+					® Reserved (up to 70% off)
+			§ Savings Plan
+				□ Up to 72% off
+				□ Commit to 1-3 years
+				□ Not only EC2 but other serverless technologies like Lambda and Fargate.
+			§ AWS Pricing Calculator
+		○ Instance Type
+			§ Offers different compute, memory and storage capabilities.
+			§ Select instance type based on the requirements of your application.
+		○ EBS Volumes (storage disk)
+			§ Purpose: create file system, run a database, run an OS, store data, install applications
+			§ Features
+				□ For mission critical production workloads
+				□ Highly available
+					® Automatically replicated in AZ
+				□ Highly scalable
+					® Dynamically increases capacity and change the type of volume with no downtime
+			§ Volume Types
+				□ General Purpose SSD (gp2)
+					® For boot disk and general application
+					® 3 IOPS per GB
+					® Up to 16k IOPS per volume
+					® Up to 99.9% durability
+				□ General Purpose SSD (gp3)
+					® For boot disk and general application
+					® 3k IOPS for all volumes
+					® Up to 16k IOPS per volume
+					® Up to 99.9% durability
+					® 20% cheaper than gp2
+				□ Provisioned IOPS SSD (io1)
+					® For OLTP and latency sensitive applications
+					® 50 IOPS per GB
+					® Up to 64k IOPS per volume
+					® Up to 99.9% durability
+					® High performance and most expensive
+				□ Provisioned IOPS SSD (io2)
+					® For OLTP and latency sensitive applications
+					® 500 IOPS per GB
+					® Up to 64k IOPS per volume
+					® Up to 99.999% durability
+				□ Provisioned IOPS SSD (io2 Block Express) - SAN in the cloud
+					® For largest, most critical, high performance applications: SAP Hana, Oracle, MS SQL Server, IBM DB2
+					® Up to 64TB, 256k IOPS per volume
+					® Up to 99.999% durability
+					® SAN in the cloud
+				□ Throughput Optimized HDD (st1)
+					® For Big Data, DW, ETL
+					® Max throughput is 500MB/s per volume
+					® Cannot be a boot volume
+					® Up to 99.9% durability
+				□ Cold HDD (sc1)
+					® Less frequently-accessed data
+					® Max throughput of 250 MB/s per volume
+					® Cannot be a boot volume
+					® Up to 99.9% durability
+					® Lowest cost
+			§ IOPS vs Throughput
+				□ IOPS
+					® Measures number of read and write per second
+					® Metric for quick transactions, low latency apps, transactional workloads
+					® Ability to action reads and writes very quickly
+				□ Throughput
+					® Measures the number of bits read or written per second (MB/s)
+					® Metric for large datasets, large I/O sizes, complex queries
+					® Ability to deal with large data sets
+		○ Elastic Load Balancer
+			§ Types
+				□ Application Load Balancer (HTTP and HTTPS)
+					® Operates at layer 7 (application) of OSI model. Application-Aware
+					® Intelligent load balancing
+				□ Network Load Balancer (TCP and High Performance)
+					® Operates at layer 4 (Transport) of OSI model. Most expensive option
+				□ Classic Load Balancer (HTTP, HTTPS and TCP)
+				□ Gateway Load Balancer
+					® For 3rd-party appliance like firewall, IDP/IPS
+				□ X-Forwarded-For header - if you need the IPv4 address of your end user, look for the x-forwarded-for header.
+			§ Common Error
+				□ Error 504 - gateway timeout
+		○ Route 53 (DNS Service) - map domain name to EC2 instances, Load Balancers or S3 buckets
+		○ AWS CLI
+			§ Access key is only available at the time off creation. If you lose it you need to create it again
+			§ Pagination, time out error may happen if result is too many. Adjust it using --page-size or --max-items
+			§ Pagination, it still returns all items but make multiple API calls
+		○ AWS Cloudshell
+			§ Linux terminal with pre-installed tool. You can run AWS CLI commands from cloudshell
+		○ RDS
+			§ For OLTP workloads not for OLAP
+			§ Database Types: MS SQL Server, Oracle, MySQL, PostgreSQL, MariaDB, Amazon Aurora
+			§ Steps:
+				□ Create RDS Database
+				□ Create EC Instance
+					® Install database client
+				□ Update security group of rds to allow connection to ec2 instance
+			§ RDS Multi-AZ
+				□ Exact copy of primary database in another AZ
+				□ Handles replication for disaster recovery
+				□ Automatic failover during failure
+			§ RDS Read-Replica (read-only copy of primary database)
+				□ For scaling performance and great for read-heavy workloads like BI reporting
+				□ Automatic backup must be enabled
+				□ Can be located in same/different AZ/region
+				□ Has a different DNS endpoint
+				□ Multiple read replicas are supported (up to 5 replicas)
+			§ RDS Automated Backup
+				□ Enabled by default
+				□ Creates daily backups that runs during the window you defined
+				□ Transaction logs are used to replay transactions.
+				□ Ability to do point-in-time recovery
+				□ Stored in S3
+				□ Retention period from 1 to 35 days
+			§ RDS Snapshot
+				□ Snapshot of storage volume attached to the DB instance
+				□ Manual, adhoc, user-initiated point in time snapshot
+				□ Stored in S3
+				□ No retention period
+				□ Backup and restore to a known state
+			§ RDS Encryption
+				□ Enabled during creation
+				□ Uses KMS for AES-256 encryption
+				□ You can't enable encryption on an unencrypted RDS instance
+				□ Includes all udnerlying storage, snposhot, logs and read replicas
+				□ To encrypt an existing RDS instance, use snapshot and create an encrypted snapshot and use that to restore a new RDS
+			§ RDS Proxy
+				□ Sits between application and RDS database
+				□ Pools and shares database connections to assist with application scalability and database efficiency
+				□ Serverless and scales automatically
+				□ Preserves application connection during failover
+				□ Detects failover and routes request to stand-by
+				□ Can be deployed to multiple AZ
+				□ Up to 66% faster failover times
+				□ Use cases, for applications
+					® With Unpredictable workloads
+					® That open/close database connections infrequently
+					® That require availability through transient failures
+					® With open but idle connections
+		○ ElastiCache
+			§ Features
+				□ In-Memory Cache (Key Value). Sits in front of a database like RDS
+				□ Improves Database Performance
+				□ Great for read-heavy database workloads
+				□ If data is not changing frequently. Not for write-heavy or OLAP
+			§ Types
+				□ Memcached
+					® Basic object caching
+					® Scales horizontally, no persistence/multi-AZ or failover
+				□ Redis
+					® With enterprise features like persistence, replication, multi-AZ and failover
+					® Supports sorting and ranking data (like gaming leaderboards, complex data type)
+		○ Memory DB for Redis
+			§ In memory database with ultra fast performance (GB to 100TB)
+			§ Microsecond read and single-digit millisecond write.
+			§ Can be a primary DB, can store the whole dataset in memory, no database required.
+		○ Systems Manager Parameter Store
+			§ Stores configuration like connection string and licenses.
+			§ Plain text or encrypted
+			§ You can reference parameters using parameter name like in bootstrap script
+			§ Integrate with other services like EC2, CloudFormation, etc.
+		○ AWS Secrets Manager
+			§ Centrally manage secrets
+			§ Great for storing database credentials, API keys, rotation of keys
+			§ Encrypt using AWS KMS
+			§ Secret Types
+				□ RDS Database
+				□ Redshift cluster
+				□ DocumentDB Database
+				□ Other Database
+				□ API Keys
+		○ EC2 Image Builder
+			§ Use to create EC2 image (AMI or container), simple to use (GUI) and Validate your image.
+			§ Automates the process of building and maintaining your image (AMI).
+			§ Steps
+				□ Select base OS
+				□ Customize by adding software
+				□ Test
+				□ Distribute to your chosen region
+			§ Terminology
+				□ Image Pipeline - setting and process
+				□ Image Recipe - source image and build components
+				□ Build Components - software to include
+	• S3
+	• Serverless Computing
+	• DynamoDB
+	• KMS and Encryption on AWS
+	• Other AWS Services
+	• Developer Theory
+	• Advanced IAM
+Monitoring
